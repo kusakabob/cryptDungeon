@@ -30,9 +30,9 @@ cc.Class({
             default: null,
             type: cc.Node
         },
-        text: {
+        monsterBar: {
             default: null,
-            type: cc.Prefab
+            type: cc.Node
         }
     },
 
@@ -41,21 +41,15 @@ cc.Class({
         self.hpBarLeft = self.hpBar.getChildByName("left").scaleX;
         self.randomRange = cc.v2(100, 100);
         self.variability = 30;
-
-        self.messagePool = new cc.NodePool();
-        let initCount = 5;
-        for (let i = 0; i < initCount; ++i) {
-            let message = cc.instantiate(this.text);
-            this.messagePool.put(message); // populate your pool with put method
-        }
-        self.messageArray = [];
     },
 
     start: function(){
     },
 
     random: function(damage){
-        return Math.round(Math.random() * ((damage + this.variability) - (damage - this.variability)) + damage -this.variability);
+        var randomDamage = Math.round(Math.random() * ((damage + this.variability) - (damage - this.variability)) + damage -this.variability);
+        if (randomDamage < 0) randomDamage = 0;
+        return randomDamage;
     },
 
     showDamage: function() {
@@ -70,55 +64,6 @@ cc.Class({
             damageCount.runAction(cc.sequence(cc.fadeOut(0.1),cc.removeSelf()));
           }.bind(this), 500);
         return damageCount.num;
-    },
-
-    showMessage: function(damage) {
-        
-        let message = null;
-    if (this.messagePool.size() > 0) { 
-        message = this.messagePool.get();
-    } else { 
-        message = cc.instantiate(this.text);
-    }
-    message.parent = this.dialogBox;
-
-    let action = "ＭＣＨウォーリアの攻撃：" + damage + "ダメージ"
-
-    message.getComponent(cc.Label).string = action;
-
-    if(this.messageArray.length > 4){
-    }
-    
-    this.messageArray.unshift(message);
-
-    if(this.messageArray.length > 5){
-        this.messagePool.put(this.messageArray[5]);
-        this.messageArray.pop(message);
-    }
-
-    this.messageArray.forEach(function(item, index){
-        
-        switch(index){
-            case 0:
-            item.position = cc.v2(-120, -43);
-            break;
-            case 1:
-            item.position = cc.v2(-120, -23);
-            break;
-            case 2:
-            item.position = cc.v2(-120, -3);
-            break;
-            case 3:
-            item.position = cc.v2(-120, 17);
-            break;
-            case 4:
-            item.position = cc.v2(-120, 37);
-            break;
-            default:
-            break;
-        }     
-    });
-   
     },
  
     reset: function() {
@@ -139,12 +84,17 @@ cc.Class({
         var damage = this.showDamage();
         if(this.hpBar.getChildByName("left").scaleX > 0){
 
-        var damagePercentage = damage / this.monster.getComponent("monsterScript").hp;
+        var damagePercentage = damage / this.monster.getComponent("MonsterScript").hp;
         var subtractPercentage = damagePercentage * (this.hpBar.getChildByName("left").scaleX / 100);
         this.hpBar.getChildByName("left").scaleX = this.hpBar.getChildByName("left").scaleX - subtractPercentage;
         }
 
-        this.showMessage(damage);
+        if(this.monsterBar.getChildByName("monster_icon").x > 0){
+        this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-1,0)))
+        }
+        var text = "ＭＣＨウォーリアの攻撃：" + damage + "ダメージ"
+
+        this.dialogBox.getComponent("DialogBoxCtrl").showMessage(text);
 
     },
     onMiddleButtonClicked: function() {
