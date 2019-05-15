@@ -96,6 +96,7 @@ cc.Class({
 
         this.dialogBox.getComponent("DialogBoxCtrl").showMessage(text);
 
+        this.statusCtrl.getComponent("StatusCtrl").addMoney(1);
     },
     onMiddleButtonClicked: function() {
         var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02));

@@ -72,6 +72,10 @@ cc.Class({
             default: null,
             type: cc.Node
         },
+        moneyLabel: {
+            default: null,
+            type: cc.Label
+        }
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -114,6 +118,10 @@ cc.Class({
         this.backAgiLabel.string = ("AGI "+ this.backAgi).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
+
+        this.moneyLabel.string = ("シエンキン： "+ this.money+"エン").replace(/[A-Za-z0-9]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) + 65248);
+        });
     },
 
     onLoad () {
@@ -132,6 +140,8 @@ cc.Class({
         this.backInt = 14;
         this.backAgi = 15;
 
+        this.money = 0;
+
         this.sumPhy = this.frontPhy + this.middlePhy + this.backPhy;
         this.sumAgi = this.frontAgi + this.middleAgi + this.backAgi;
 
@@ -143,6 +153,11 @@ cc.Class({
         this.middleHero.opacity = 255;
         this.backHero.opacity = 255;
 },
+
+    addMoney(amount) {
+        this.money += amount;
+        this.reflectLabel();
+    },
 
     takeDamage(num, damage) {
         switch(num){
