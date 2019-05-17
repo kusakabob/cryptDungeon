@@ -12,26 +12,102 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        // foo: {
-        //     // ATTRIBUTES:
-        //     default: null,        // The default value will be used only when the component attaching
-        //                           // to a node for the first time
-        //     type: cc.SpriteFrame, // optional, default is typeof default
-        //     serializable: true,   // optional, default is true
-        // },
-        // bar: {
-        //     get () {
-        //         return this._bar;
-        //     },
-        //     set (value) {
-        //         this._bar = value;
-        //     }
-        // },
+        moneyLabel: {
+            default: null,
+            type: cc.Label
+        },
+        selectionLabel: {
+            default: null,
+            type: cc.Label
+        },
+        statusCtrl: {
+            default: null,
+            type: cc.Node
+        },
+        kyokaLabel: {
+            default: null,
+            type: cc.Node,
+        },
+        madoshoLabel: {
+            default: null,
+            type: cc.Node,
+        },
+        haneLabel: {
+            default: null,
+            type: cc.Node,
+        },
     },
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {},
+    onKyokaClicked (){
+        this.selectionLabel.node.y = 29;
+        this.selectedItem = "kyoka";
+    },
+
+    onMadoshoClicked (){
+        this.selectionLabel.node.y = 0;
+        this.selectedItem = "madosho";
+    },
+
+    onHaneClicked (){
+        this.selectionLabel.node.y = -29;
+        this.selectedItem = "hane";
+    },
+
+    reflectLabel() {
+        this.kyokaLabel.getComponent(cc.Label).string = ("肉体強化薬："+ this.kyokaPrice +"エン").replace(/[A-Za-z0-9]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) + 65248);
+        });
+        this.madoshoLabel.getComponent(cc.Label).string = ("魔導書："+ this.madoshoPrice +"エン").replace(/[A-Za-z0-9]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) + 65248);
+        });
+        this.haneLabel.getComponent(cc.Label).string = ("黄金の羽："+ this.hanePrice +"エン").replace(/[A-Za-z0-9]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) + 65248);
+        });
+    },
+
+    changeLabelColor(money) {
+        var gray = new cc.Color(124, 124, 124);
+        var white = new cc.Color(255, 255, 255);
+
+        if(money < this.kyokaPrice) {
+            this.kyokaLabel.color = gray;
+            
+        }else{
+            this.kyokaLabel.color = white;
+            
+        }
+        if(money < this.madoshoPrice){
+            this.madoshoLabel.color = gray;
+            
+        }else{
+            this.madoshoLabel.color = white;
+            
+        }
+        if(money < this.hanePrice){
+            this.haneLabel.color = gray;
+            
+        }else{
+            this.haneLabel.color = white;
+            
+        }
+    },
+
+    onLoad () {
+        this.selectedItem = "kyoka";
+        this.kyokaPrice = 100;
+        this.madoshoPrice = 500;
+        this.hanePrice = 1000;
+
+        this.kyokaActive = false;
+        this.madoshoActive = false;
+        this.haneActive = false;
+
+        this.money = this.statusCtrl.getComponent("StatusCtrl").money;
+        this.changeLabelColor(this.money);
+        this.reflectLabel();
+    },
 
     start () {
 

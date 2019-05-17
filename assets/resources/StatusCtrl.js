@@ -75,6 +75,10 @@ cc.Class({
         moneyLabel: {
             default: null,
             type: cc.Label
+        },
+        shopCtrl:{
+            default: null,
+            type: cc.Node
         }
     },
 
@@ -157,6 +161,7 @@ cc.Class({
     addMoney(amount) {
         this.money += amount;
         this.reflectLabel();
+        this.shopCtrl.getComponent("ShopCtrl").changeLabelColor(this.money);
     },
 
     takeDamage(num, damage) {
@@ -174,9 +179,6 @@ cc.Class({
             this.backHero.runAction(cc.sequence(cc.blink(0.1,3), cc.callFunc(this.reset(),this)));
             break;
         }
-
-        console.log(this.frontHp);
-
 
         this.reflectLabel();
     },

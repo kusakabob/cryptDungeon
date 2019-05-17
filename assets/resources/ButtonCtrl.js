@@ -3,9 +3,8 @@ cc.Class({
     extends: cc.Component,
  
     properties: {
-        frontButton: cc.Node,
-        middleButton: cc.Node,
-        backButton: cc.Node,
+        attackButton: cc.Node,
+        buyButton: cc.Node,
         hpBar: {
             default: null,
             type: cc.Node,
@@ -31,6 +30,10 @@ cc.Class({
             type: cc.Node
         },
         monsterBar: {
+            default: null,
+            type: cc.Node
+        },
+        shopCtrl: {
             default: null,
             type: cc.Node
         }
@@ -69,17 +72,22 @@ cc.Class({
     reset: function() {
             this.monster.opacity = 255;
         
-        if (this.frontButton.scaleX < 1.178){
-            this.frontButton.scaleX = 1.178;
-            this.frontButton.scaleY = 1.178;
+        if (this.attackButton.scaleX < 1.178){
+            this.attackButton.scaleX = 1.178;
+            this.attackButton.scaleY = 1.178;
+        }
+
+        if (this.buyButton.scaleX < 1.178){
+            this.buyButton.scaleX = 1.178;
+            this.buyButton.scaleY = 1.178;
         }
     },
 
-    onFrontButtonClicked: function() {
+    onAttackButtonClicked: function() {
         var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02), cc.callFunc(this.reset(),this));
         var anim = this.frontAnim;
         anim.play('frontAttack');
-        this.frontButton.runAction(onPress);
+        this.attackButton.runAction(onPress);
         this.monster.runAction(cc.sequence(cc.blink(0.1,3), cc.callFunc(this.reset(),this)));
         var damage = this.showDamage();
         if(this.hpBar.getChildByName("left").scaleX > 0){
@@ -96,19 +104,40 @@ cc.Class({
 
         this.dialogBox.getComponent("DialogBoxCtrl").showMessage(text);
 
-        this.statusCtrl.getComponent("StatusCtrl").addMoney(1);
+        this.statusCtrl.getComponent("StatusCtrl").addMoney(100);
     },
-    onMiddleButtonClicked: function() {
-        var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02));
-        console.log('middle button clicked!');
-        this.middleButton.runAction(onPress);
-        this.monster.runAction(cc.blink(0.2,3));
-    },
-    onBackButtonClicked: function() {
-        var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02));
-        console.log('back button clicked!');
-        this.backButton.runAction(onPress);
-        this.monster.runAction(cc.blink(0.2,3));
+    onBuyButtonClicked: function() {
+        var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02), cc.callFunc(this.reset(),this));
+        this.buyButton.runAction(onPress);
+        var price = 0;
+        var active = false;
+
+        switch(this.shopCtrl.getComponent("ShopCtrl").selectedItem){
+            case "kyoka":
+            price = this.shopCtrl.getComponent("ShopCtrl").kyokaPrice;
+            if (price <= this.statusCtrl.getComponent("StatusCtrl").money){
+                active = true;
+            }
+            break;
+            case "madosho":
+            price = this.shopCtrl.getComponent("ShopCtrl").madoshoPrice;
+            if (price <= this.statusCtrl.getComponent("StatusCtrl").money){
+                active = true;
+            }
+            break;
+            case "hane":
+            price = this.shopCtrl.getComponent("ShopCtrl").hanePrice;
+            if (price <= this.statusCtrl.getComponent("StatusCtrl").money){
+                active = true;
+            }
+            break;
+            default:
+            break;
+        }
+        
+        if(active){
+        this.statusCtrl.getComponent("StatusCtrl").addMoney(-price);
+        }
     },
 
     getRandomPosition: function() {
