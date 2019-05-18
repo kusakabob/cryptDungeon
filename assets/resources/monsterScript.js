@@ -36,15 +36,31 @@ cc.Class({
     },
 
     onLoad () {
-        
+        this.stop = false;
     },
 
     start (){
         this.interval = this.statusCtrl.getComponent("StatusCtrl").sumAgi;
-        this.schedule(this.action, 1);
+        this.interval = this.interval / 45;
+        this.timer = this.schedule(this.action, this.interval);
+    },
+
+    resetSchedule (){
+        this.interval = this.statusCtrl.getComponent("StatusCtrl").sumAgi;
+        this.interval = this.interval / 45;
+        this.stop = true;
+    },
+
+    reschedule(action) {
+        this.stop = false;
+        this.timer = this.schedule(action, this.interval);
     },
 
     action () {
+        if(this.stop) {
+            this.unschedule(this.action);
+            this.reschedule(this.action);
+        };
         var randomNum = this.getRandomInt(2);
 
         if(randomNum == 0){
@@ -52,7 +68,6 @@ cc.Class({
         }else{
             this.move();
         }
-        
         
     },
 

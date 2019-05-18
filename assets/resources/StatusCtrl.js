@@ -85,7 +85,7 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     reflectLabel() {
-        this.frontHpLabel.string = ("HP "+ this.frontHp +"/45").replace(/[A-Za-z0-9]/g, function(s) {
+        this.frontHpLabel.string = ("HP "+ this.frontHp +"/" +this.maxHp).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
         this.frontPhyLabel.string = ("PHY "+ this.frontPhy).replace(/[A-Za-z0-9]/g, function(s) {
@@ -98,7 +98,7 @@ cc.Class({
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
 
-        this.middleHpLabel.string = ("HP "+ this.middleHp +"/45").replace(/[A-Za-z0-9]/g, function(s) {
+        this.middleHpLabel.string = ("HP "+ this.middleHp +"/" +this.maxHp).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
         this.middlePhyLabel.string = ("PHY "+ this.middlePhy).replace(/[A-Za-z0-9]/g, function(s) {
@@ -110,7 +110,7 @@ cc.Class({
         this.middleAgiLabel.string = ("AGI "+ this.middleAgi).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
-        this.backHpLabel.string = ("HP "+ this.backHp +"/45").replace(/[A-Za-z0-9]/g, function(s) {
+        this.backHpLabel.string = ("HP "+ this.backHp +"/" +this.maxHp).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
         this.backPhyLabel.string = ("PHY "+ this.backPhy).replace(/[A-Za-z0-9]/g, function(s) {
@@ -126,6 +126,10 @@ cc.Class({
         this.moneyLabel.string = ("シエンキン： "+ this.money+"エン").replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
+
+        this.sumPhy = this.frontPhy + this.middlePhy + this.backPhy;
+        this.sumInt = this.frontInt + this.middleInt + this.backInt;
+        this.sumAgi = this.frontAgi + this.middleAgi + this.backAgi;
     },
 
     onLoad () {
@@ -144,9 +148,13 @@ cc.Class({
         this.backInt = 14;
         this.backAgi = 15;
 
+        this.maxHp = 45;
+
+        this.moneyRate = 1;
         this.money = 0;
 
         this.sumPhy = this.frontPhy + this.middlePhy + this.backPhy;
+        this.sumInt = this.frontInt + this.middleInt + this.backInt;
         this.sumAgi = this.frontAgi + this.middleAgi + this.backAgi;
 
         this.reflectLabel();
