@@ -15,7 +15,24 @@ cc.Class({
         text: {
             default: null,
             type: cc.Prefab
+        },
+        gameOver: {
+            default: null,
+            type: cc.Node
+        },
+        frontHero: {
+            default: null,
+            type: cc.Node
+        },
+        middleHero: {
+            default: null,
+            type: cc.Node
+        },
+        backHero: {
+            default: null,
+            type: cc.Node
         }
+
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -28,9 +45,35 @@ cc.Class({
             this.messagePool.put(message); // populate your pool with put method
         }
         this.messageArray = [];
+        this.gameOver.opacity = 0;
+        this.end = false;
+    },
+
+    showGameOver(condition){
+        this.gameOver.opacity = 255;
+        if (condition){
+            this.gameOver.getComponent(cc.Label).string = "ゲームクリア！"
+        }
+        var self = this;
+        this.messageArray.forEach(function(item, index){
+            self.showMessage("");
+        });
+        this.end = true;
+        if(!condition){
+            cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                self.frontHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+            cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                self.middleHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+            cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                self.backHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+        }
     },
 
     showMessage(text){
+    if(this.end) return;
         
     let message = null;
     if (this.messagePool.size() > 0) { 

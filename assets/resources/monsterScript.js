@@ -57,9 +57,13 @@ cc.Class({
     },
 
     action () {
-        if(this.stop) {
+        var end = this.dialogBox.getComponent("DialogBoxCtrl").end;
+
+        if(this.stop || end) {
             this.unschedule(this.action);
+            if(!end){
             this.reschedule(this.action);
+            }
         };
         var randomNum = this.getRandomInt(2);
 
@@ -76,6 +80,8 @@ cc.Class({
         this.node.runAction(cc.sequence(cc.moveBy(0.1, cc.v2(20,0)), cc.moveBy(0.1, cc.v2(-20,0)) ))
         if(monsterIcon.x <= 271){
         monsterIcon.runAction(cc.moveBy(0.1, cc.v2(5,0)))
+        }else{
+            this.dialogBox.getComponent("dialogBoxCtrl").showGameOver(false);
         }
 
         var text = "モンスターは前進している";
@@ -87,24 +93,40 @@ cc.Class({
     attack (power) {
 
         var randomNum = this.getRandomInt(3);
-
-        this.statusCtrl.getComponent("StatusCtrl").takeDamage(randomNum, power);
+        var statusCtrl = this.statusCtrl.getComponent("StatusCtrl");
 
         var target ="";
+        var targetDead = false;
 
         switch(randomNum){
             case 0:
             target = "MCHウォーリア";
+            if(statusCtrl.frontDead){
+                targetDead = true;
+            }
             break;
             case 1:
             target = "MCHタクティシャン";
+            if(statusCtrl.middleDead){
+                targetDead = true;
+            }
             break;
             case 2:
             target = "MCHアーティスト";
+            if(statusCtrl.backDead){
+                targetDead = true;
+            }
             break;
         }
 
-        var text = "モンスターの攻撃：" + target + "に" + power + "ダメージ";
+        var text = "";
+        if(!targetDead){
+        text = "モンスターの攻撃：" + target + "に" + power + "ダメージ";
+        }else{
+            text = "モンスターは様子をうかがっている";
+        }
+
+        statusCtrl.takeDamage(randomNum, power);
 
         this.dialogBox.getComponent("DialogBoxCtrl").showMessage(text);
     },

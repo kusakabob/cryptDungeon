@@ -79,15 +79,27 @@ cc.Class({
         shopCtrl:{
             default: null,
             type: cc.Node
+        },
+        dialogBoxCtrl:{
+            default: null,
+            type: cc.Node
         }
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     reflectLabel() {
+        
+        if(!this.frontDead){
         this.frontHpLabel.string = ("HP "+ this.frontHp +"/" +this.maxHp).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
+    }else{
+        this.frontHpLabel.string = ("HP "+ this.frontHp +"/0").replace(/[A-Za-z0-9]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) + 65248);
+        });
+    }
+    
         this.frontPhyLabel.string = ("PHY "+ this.frontPhy).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
@@ -97,10 +109,17 @@ cc.Class({
         this.frontAgiLabel.string = ("AGI "+ this.frontAgi).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
-
+        
+        if(!this.middleDead){
         this.middleHpLabel.string = ("HP "+ this.middleHp +"/" +this.maxHp).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
+    }else{
+        this.middleHpLabel.string = ("HP "+ this.middleHp +"/0").replace(/[A-Za-z0-9]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) + 65248);
+        });
+    }
+    
         this.middlePhyLabel.string = ("PHY "+ this.middlePhy).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
@@ -110,9 +129,17 @@ cc.Class({
         this.middleAgiLabel.string = ("AGI "+ this.middleAgi).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
+        
+        if(!this.backDead){
         this.backHpLabel.string = ("HP "+ this.backHp +"/" +this.maxHp).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
+    }else{
+        this.backHpLabel.string = ("HP "+ this.backHp +"/0").replace(/[A-Za-z0-9]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) + 65248);
+        });
+    }
+    
         this.backPhyLabel.string = ("PHY "+ this.backPhy).replace(/[A-Za-z0-9]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
@@ -127,9 +154,34 @@ cc.Class({
             return String.fromCharCode(s.charCodeAt(0) + 65248);
         });
 
+        if(this.frontDead){
+            this.frontPhy = 0;
+            this.frontInt = 0;
+            this.frontAgi = 0;
+            this.frontHp = 0;
+        }
+        if(this.middleDead){
+            this.middlePhy = 0;
+            this.middleInt = 0;
+            this.middleAgi = 0;
+            this.middleHp = 0;
+        }
+        if(this.backDead){
+            this.backPhy = 0;
+            this.backInt = 0;
+            this.backAgi = 0;
+            this.backHp = 0;
+        }
+
         this.sumPhy = this.frontPhy + this.middlePhy + this.backPhy;
         this.sumInt = this.frontInt + this.middleInt + this.backInt;
         this.sumAgi = this.frontAgi + this.middleAgi + this.backAgi;
+        this.sumHp = this.frontHp + this.middleHp + this.backHp;
+
+
+        if(this.sumHp <= 0){
+            this.dialogBoxCtrl.getComponent("DialogBoxCtrl").showGameOver(false);
+        }
     },
 
     onLoad () {
@@ -137,16 +189,19 @@ cc.Class({
         this.frontPhy = 16;
         this.frontInt = 14;
         this.frontAgi = 15;
+        this.frontDead = false;
 
         this.middleHp = 45;
         this.middlePhy = 16;
         this.middleInt = 14;
         this.middleAgi = 15;
+        this.middleDead = false;
 
         this.backHp = 45;
         this.backPhy = 16;
         this.backInt = 14;
         this.backAgi = 15;
+        this.backDead = false;
 
         this.maxHp = 45;
 
@@ -173,18 +228,55 @@ cc.Class({
     },
 
     takeDamage(num, damage) {
+        var self = this;
         switch(num){
             case 0:
             this.frontHp -= damage;
+            if(!this.frontDead){
             this.frontHero.runAction(cc.sequence(cc.blink(0.1,3), cc.callFunc(this.reset(),this)));
+        
+            }
+            if(this.frontHp <= 0) {
+                this.frontHp = 0;
+                
+                cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                    self.frontHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+                });
+                if(!this.frontDead) this.dialogBoxCtrl.getComponent("DialogBoxCtrl").showMessage("ＭＣＨウォーリアはしんでしまった");
+                this.frontDead = true;
+            }
             break;
             case 1:
             this.middleHp -= damage;
+            if(!this.middleDead){
             this.middleHero.runAction(cc.sequence(cc.blink(0.1,3), cc.callFunc(this.reset(),this)));
+            }
+            if(this.middleHp <= 0) {
+                this.middleHp = 0;
+                
+                cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                    self.middleHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+                });
+
+                if(!this.middleDead) this.dialogBoxCtrl.getComponent("DialogBoxCtrl").showMessage("ＭＣＨタクティシャンはしんでしまった");
+                this.middleDead = true;
+            }
             break;
             case 2:
             this.backHp -= damage;
+            if(!this.backDead){
             this.backHero.runAction(cc.sequence(cc.blink(0.1,3), cc.callFunc(this.reset(),this)));
+            }
+            if(this.backHp <= 0) {
+                this.backHp = 0;
+                
+                cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                    self.backHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+                });
+                
+                if(!this.backDead) this.dialogBoxCtrl.getComponent("DialogBoxCtrl").showMessage("ＭＣＨアーティストはしんでしまった");
+                this.backDead = true;
+            }
             break;
         }
 
@@ -195,5 +287,8 @@ cc.Class({
 
     },
 
-    // update (dt) {},
+    update (dt) {
+        
+
+    },
 });

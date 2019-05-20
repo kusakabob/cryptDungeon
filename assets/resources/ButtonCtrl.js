@@ -13,6 +13,14 @@ cc.Class({
             default: null,
             type: cc.Animation
         },
+        middleAnim: {
+            default: null,
+            type: cc.Animation
+        },
+        backAnim: {
+            default: null,
+            type: cc.Animation
+        },
         monster: {
             default: null,
             type: cc.Node
@@ -34,6 +42,18 @@ cc.Class({
             type: cc.Node
         },
         shopCtrl: {
+            default: null,
+            type: cc.Node
+        },
+        frontHero: {
+            default: null,
+            type: cc.Node
+        },
+        middleHero: {
+            default: null,
+            type: cc.Node
+        },
+        backHero: {
             default: null,
             type: cc.Node
         }
@@ -91,11 +111,33 @@ cc.Class({
     },
 
     onAttackButtonClicked: function() {
+        var self = this;
+        if (this.dialogBox.getComponent("DialogBoxCtrl").end) return;
         var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02), cc.callFunc(this.reset(),this));
-        var anim = this.frontAnim;
+        
         var statusCtrl = this.statusCtrl.getComponent("StatusCtrl");
+        if(!this.statusCtrl.getComponent("StatusCtrl").frontDead){
+        this.frontAnim.play('frontAttack');
+        }else{
+            cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                self.frontHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+        }
+        if(!this.statusCtrl.getComponent("StatusCtrl").middleDead){
+            this.middleAnim.play('middleAttack');
+        }else{
+            cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                self.middleHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+        }
+        if(!this.statusCtrl.getComponent("StatusCtrl").backDead){
+            this.backAnim.play('backAttack');
+        }else{
+            cc.loader.loadRes("dead", cc.SpriteFrame, function (err, spriteFrame) {
+                self.backHero.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+        }
 
-        anim.play('frontAttack');
         this.attackButton.runAction(onPress);
         this.monster.runAction(cc.sequence(cc.blink(0.1,3), cc.callFunc(this.reset(),this)));
         var damage = this.showDamage();
@@ -104,18 +146,22 @@ cc.Class({
         var damagePercentage = damage / this.monster.getComponent("MonsterScript").hp;
         var subtractPercentage = damagePercentage * (this.hpBar.getChildByName("left").scaleX / 100);
         this.hpBar.getChildByName("left").scaleX = this.hpBar.getChildByName("left").scaleX - subtractPercentage;
+        if (this.hpBar.getChildByName("left").scaleX <= 0.1) this.dialogBox.getComponent("DialogBoxCtrl").showGameOver(true);
         }
 
         if(this.monsterBar.getChildByName("monster_icon").x > 0){
         this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-1,0)))
-        }
+        } 
         var text = "ヒーローの攻撃：" + damage + "ダメージ"
 
         this.dialogBox.getComponent("DialogBoxCtrl").showMessage(text);
 
         statusCtrl.addMoney(statusCtrl.moneyRate);
+
+
     },
     onBuyButtonClicked: function() {
+        if (this.dialogBox.getComponent("DialogBoxCtrl").end) return;
         var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02), cc.callFunc(this.reset(),this));
         this.buyButton.runAction(onPress);
         var price = 0;
@@ -135,12 +181,12 @@ cc.Class({
                 text.push("HPが全回復した")
                 text.push("PHYが５UPした");
                 status.maxHp += 5;
-                status.frontHp = status.maxHp;
-                status.middleHp = status.maxHp;
-                status.backHp = status.maxHp;
-                status.frontPhy += 5;
-                status.middlePhy += 5;
-                status.backPhy += 5;
+                if (!status.frontDead) status.frontHp = status.maxHp;
+                if (!status.middleDead) status.middleHp = status.maxHp;
+                if (!status.backDead) status.backHp = status.maxHp;
+                if (!status.frontDead) status.frontPhy += 5;
+                if (!status.middleDead) status.middlePhy += 5;
+                if (!status.backDead) status.backPhy += 5;
             }
             break;
             case "madosho":
@@ -151,9 +197,9 @@ cc.Class({
                 text.push("魔導書を買った");
                 text.push("7秒だけ魔法が使えるようになった");
                 text.push("INTが５UPした");
-                status.frontInt += 5;
-                status.middleInt += 5;
-                status.backInt += 5;
+                if (!status.frontDead) status.frontInt += 5;
+                if (!status.middleDead) status.middleInt += 5;
+                if (!status.backDead) status.backInt += 5;
                 this.attackButton.getChildByName("label").getComponent(cc.Label).string = "マホウコウゲキ";
                 this.schedule(function(){
                     this.attackButton.getChildByName("label").getComponent(cc.Label).string = "コウゲキ";
@@ -168,9 +214,9 @@ cc.Class({
                 text.push("魔法の羽根を買った");
                 text.push("シエンキンの調達料が増えた");
                 text.push("AGIが1UPした");
-                status.frontAgi += 1;
-                status.middleAgi += 1;
-                status.backAgi += 1;
+                if (!status.frontDead) status.frontAgi += 1;
+                if (!status.middleDead) status.middleAgi += 1;
+                if (!status.backDead) status.backAgi += 1;
                 status.sumAgi = status.frontAgi + status.middleAgi + status.backAgi;
                 status.moneyRate += 1;
                 this.monster.getComponent("MonsterScript").resetSchedule();
