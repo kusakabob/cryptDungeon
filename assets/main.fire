@@ -316,13 +316,13 @@
         "__id__": 7
       },
       {
-        "__id__": 126
+        "__id__": 128
       },
       {
         "__id__": 98
       },
       {
-        "__id__": 129
+        "__id__": 127
       }
     ],
     "_active": true,
@@ -413,8 +413,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 265,
-      "height": 185
+      "width": 180,
+      "height": 220
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -458,7 +458,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "7d9eb0a1-db67-4e0c-99a7-2b2441819c50"
+      "__uuid__": "189c4982-c5e7-4142-b8a1-6023e755d470"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -509,10 +509,9 @@
       "__id__": 7
     },
     "_enabled": true,
-    "hp": 10000,
+    "hp": 500,
     "interval": 1,
-    "speed": 0.1,
-    "power": 45,
+    "power": 5,
     "monsterBar": {
       "__id__": 11
     },
@@ -521,6 +520,21 @@
     },
     "statusCtrl": {
       "__id__": 31
+    },
+    "moveAudio": {
+      "__uuid__": "b55d5c4f-d004-42a6-b81a-9dcb4ba96d24"
+    },
+    "attackAudio": {
+      "__uuid__": "461d8430-b93a-48a0-a568-8321c63def32"
+    },
+    "hpBar": {
+      "__id__": 98
+    },
+    "levelUpAudio": {
+      "__uuid__": "b26d1ab4-d1ec-4c82-9711-e78cc71b11e6"
+    },
+    "nameLabel": {
+      "__id__": 126
     },
     "_id": "aco/62ccRNSJzNV+04Fq5Y"
   },
@@ -3744,6 +3758,12 @@
     "backHero": {
       "__id__": 24
     },
+    "attackAudio": {
+      "__uuid__": "108a24c0-e9a3-42f9-88f0-7af6057fc08a"
+    },
+    "buyAudio": {
+      "__uuid__": "5128cf95-d2ef-486b-bb9a-98ca85179622"
+    },
     "_id": "2dK69WXP9E36Ntw1vsptS/"
   },
   {
@@ -5562,6 +5582,95 @@
     "_id": "b8AyNdPetHS5P0mTpouF6Y"
   },
   {
+    "__type__": "cc.Label",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 127
+    },
+    "_enabled": true,
+    "_materials": [],
+    "_useOriginalSize": false,
+    "_string": "ナイト",
+    "_N$string": "ナイト",
+    "_fontSize": 15,
+    "_lineHeight": 15,
+    "_enableWrapText": true,
+    "_N$file": {
+      "__uuid__": "9e02855d-953c-4072-a957-d1c1b0687841"
+    },
+    "_isSystemFontUsed": false,
+    "_spacingX": 0,
+    "_batchAsBitmap": false,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$fontFamily": "Arial",
+    "_N$overflow": 0,
+    "_N$cacheMode": 0,
+    "_id": "90Tm93aiRGe5TY5SP4En2i"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "name",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 6
+    },
+    "_children": [],
+    "_active": true,
+    "_level": 4,
+    "_components": [
+      {
+        "__id__": 126
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 30.01,
+      "height": 18.9
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_position": {
+      "__type__": "cc.Vec3",
+      "x": -2.1,
+      "y": 142.587,
+      "z": 0
+    },
+    "_scale": {
+      "__type__": "cc.Vec3",
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "_quat": {
+      "__type__": "cc.Quat",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "w": 1
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "groupIndex": 0,
+    "_rotationX": 0,
+    "_rotationY": 0,
+    "_id": "23VOc7Ae9K2bBCkoquZQRS"
+  },
+  {
     "__type__": "cc.Node",
     "_name": "sectionTitle",
     "_objFlags": 0,
@@ -5573,10 +5682,10 @@
     "_level": 4,
     "_components": [
       {
-        "__id__": 127
+        "__id__": 129
       },
       {
-        "__id__": 128
+        "__id__": 130
       }
     ],
     "_prefab": null,
@@ -5630,7 +5739,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 126
+      "__id__": 128
     },
     "_enabled": true,
     "_materials": [],
@@ -5658,7 +5767,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 126
+      "__id__": 128
     },
     "_enabled": true,
     "alignMode": 1,
@@ -5679,95 +5788,6 @@
     "_originalWidth": 144.49,
     "_originalHeight": 0,
     "_id": "24MUOExZpB7pozkRMyLO0w"
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "name",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 6
-    },
-    "_children": [],
-    "_active": true,
-    "_level": 4,
-    "_components": [
-      {
-        "__id__": 130
-      }
-    ],
-    "_prefab": null,
-    "_opacity": 255,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 0,
-      "g": 0,
-      "b": 0,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 40.02,
-      "height": 18.9
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_position": {
-      "__type__": "cc.Vec3",
-      "x": -2.1,
-      "y": 137.724,
-      "z": 0
-    },
-    "_scale": {
-      "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
-      "z": 1
-    },
-    "_quat": {
-      "__type__": "cc.Quat",
-      "x": 0,
-      "y": 0,
-      "z": 0,
-      "w": 1
-    },
-    "_skewX": 0,
-    "_skewY": 0,
-    "_is3DNode": false,
-    "groupIndex": 0,
-    "_rotationX": 0,
-    "_rotationY": 0,
-    "_id": "23VOc7Ae9K2bBCkoquZQRS"
-  },
-  {
-    "__type__": "cc.Label",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 129
-    },
-    "_enabled": true,
-    "_materials": [],
-    "_useOriginalSize": false,
-    "_string": "キマイラ",
-    "_N$string": "キマイラ",
-    "_fontSize": 15,
-    "_lineHeight": 15,
-    "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "9e02855d-953c-4072-a957-d1c1b0687841"
-    },
-    "_isSystemFontUsed": false,
-    "_spacingX": 0,
-    "_batchAsBitmap": false,
-    "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
-    "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
-    "_N$cacheMode": 0,
-    "_id": "90Tm93aiRGe5TY5SP4En2i"
   },
   {
     "__type__": "cc.Sprite",

@@ -14,7 +14,6 @@ cc.Class({
     properties: {
         hp: 0,
         interval: 0.1,
-        speed: 0.1,
         power: 0,
         monsterBar: {
             default: null,
@@ -27,6 +26,26 @@ cc.Class({
         statusCtrl:{
             default:null,
             type:cc.Node
+        },
+        moveAudio: {
+            default: null,
+            type:cc.AudioClip
+        },
+        attackAudio: {
+            default: null,
+            type: cc.AudioClip
+        },
+        hpBar: {
+            default: null,
+            type: cc.Node
+        },
+        levelUpAudio: {
+            default: null,
+            type: cc.AudioClip
+        },
+        nameLabel: {
+            default: null,
+            type: cc.Label
         }
     },
 
@@ -37,11 +56,13 @@ cc.Class({
 
     onLoad () {
         this.stop = false;
+        cc.audioEngine.setEffectsVolume(0.5);
+        this.level = 1;
     },
 
     start (){
         this.interval = this.statusCtrl.getComponent("StatusCtrl").sumAgi;
-        this.interval = this.interval / 45;
+        this.interval = 45 / this.interval;
         this.timer = this.schedule(this.action, this.interval);
     },
 
@@ -66,6 +87,7 @@ cc.Class({
             }
         };
         var randomNum = this.getRandomInt(2);
+        console.log(randomNum);
 
         if(randomNum == 0){
             this.attack(this.power);
@@ -75,11 +97,49 @@ cc.Class({
         
     },
 
+    levelUp() {
+        var self = this;
+        this.level += 1;
+        cc.audioEngine.playEffect(this.levelUpAudio, false);
+
+        switch(this.level){
+            case 2:
+            this.hp = 5000;
+            this.power = 10;
+            this.hpBar.getChildByName("left").scaleX = 39.537;
+            this.nameLabel.string = "キマイラ";
+            cc.loader.loadRes("monster", cc.SpriteFrame, function (err, spriteFrame) {
+                self.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+            
+            break;
+            case 3:
+            this.hp = 50000;
+            this.power = 50;
+            this.hpBar.getChildByName("left").scaleX = 39.537;
+            this.nameLabel.string = "ギガキマイラ"
+            cc.loader.loadRes("monster2", cc.SpriteFrame, function (err, spriteFrame) {
+                self.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+            break;
+            case 4:
+            this.hp = 100000;
+            this.power = 100;
+            this.hpBar.getChildByName("left").scaleX = 39.537;
+            this.nameLabel.string = "クリプ首領"
+            cc.loader.loadRes("cryptdon", cc.SpriteFrame, function (err, spriteFrame) {
+                self.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+            });
+            break;
+        }
+    },
+
     move () {
+        cc.audioEngine.playEffect(this.moveAudio, false);
         var monsterIcon = this.monsterBar.getChildByName("monster_icon");
         this.node.runAction(cc.sequence(cc.moveBy(0.1, cc.v2(20,0)), cc.moveBy(0.1, cc.v2(-20,0)) ))
         if(monsterIcon.x <= 271){
-        monsterIcon.runAction(cc.moveBy(0.1, cc.v2(5,0)))
+        monsterIcon.runAction(cc.moveBy(0.1, cc.v2(10,0)))
         }else{
             this.dialogBox.getComponent("dialogBoxCtrl").showGameOver(false);
         }
@@ -91,7 +151,7 @@ cc.Class({
     },
 
     attack (power) {
-
+        
         var randomNum = this.getRandomInt(3);
         var statusCtrl = this.statusCtrl.getComponent("StatusCtrl");
 
@@ -122,6 +182,7 @@ cc.Class({
         var text = "";
         if(!targetDead){
         text = "モンスターの攻撃：" + target + "に" + power + "ダメージ";
+        cc.audioEngine.playEffect(this.attackAudio, false);
         }else{
             text = "モンスターは様子をうかがっている";
         }

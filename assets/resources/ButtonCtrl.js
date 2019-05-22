@@ -56,6 +56,14 @@ cc.Class({
         backHero: {
             default: null,
             type: cc.Node
+        },
+        attackAudio: {
+            default: null,
+            type: cc.AudioClip
+        },
+        buyAudio: {
+            default: null,
+            type: cc.AudioClip
         }
     },
 
@@ -83,7 +91,12 @@ cc.Class({
             damageCount.num = this.statusCtrl.getComponent("StatusCtrl").sumInt * 10;
             damageCount.color = blue; 
         }else{
+            if(this.monster.getComponent("MonsterScript").level < 4){
             damageCount.num = this.statusCtrl.getComponent("StatusCtrl").sumPhy;
+            }else{
+                damageCount.num = 1;
+            }
+
         }
         damageCount.num = this.random(damageCount.num);
         damageCount.getComponent(cc.Label).string = damageCount.num;
@@ -111,7 +124,11 @@ cc.Class({
     },
 
     onAttackButtonClicked: function() {
+        if (this.dialogBox.getComponent("DialogBoxCtrl").end) return;
         var self = this;
+
+        cc.audioEngine.playEffect(this.attackAudio, false);
+
         if (this.dialogBox.getComponent("DialogBoxCtrl").end) return;
         var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02), cc.callFunc(this.reset(),this));
         
@@ -144,9 +161,15 @@ cc.Class({
         if(this.hpBar.getChildByName("left").scaleX > 0){
 
         var damagePercentage = damage / this.monster.getComponent("MonsterScript").hp;
+        console.log(damagePercentage);
         var subtractPercentage = damagePercentage * (this.hpBar.getChildByName("left").scaleX / 100);
-        this.hpBar.getChildByName("left").scaleX = this.hpBar.getChildByName("left").scaleX - subtractPercentage;
-        if (this.hpBar.getChildByName("left").scaleX <= 0.1) this.dialogBox.getComponent("DialogBoxCtrl").showGameOver(true);
+        this.hpBar.getChildByName("left").scaleX = this.hpBar.getChildByName("left").scaleX - damagePercentage;
+        if (this.hpBar.getChildByName("left").scaleX <= 0.1) {
+            this.monster.getComponent("MonsterScript").levelUp();
+                if(this.monster.getComponent("MonsterScript").level > 4){
+                this.dialogBox.getComponent("DialogBoxCtrl").showGameOver(true);
+                }
+            }
         }
 
         if(this.monsterBar.getChildByName("monster_icon").x > 0){
@@ -162,6 +185,7 @@ cc.Class({
     },
     onBuyButtonClicked: function() {
         if (this.dialogBox.getComponent("DialogBoxCtrl").end) return;
+
         var onPress = cc.sequence(cc.scaleBy(0.05, 0.98), cc.scaleBy(0.05, 1.02), cc.callFunc(this.reset(),this));
         this.buyButton.runAction(onPress);
         var price = 0;
@@ -181,6 +205,9 @@ cc.Class({
                 text.push("HPが全回復した")
                 text.push("PHYが５UPした");
                 status.maxHp += 5;
+                this.shopCtrl.getComponent("ShopCtrl").kyokaPrice = Math.round(this.shopCtrl.getComponent("ShopCtrl").kyokaPrice * 1.1);
+                this.shopCtrl.getComponent("ShopCtrl").reflectLabel();
+                
                 if (!status.frontDead) status.frontHp = status.maxHp;
                 if (!status.middleDead) status.middleHp = status.maxHp;
                 if (!status.backDead) status.backHp = status.maxHp;
@@ -200,6 +227,10 @@ cc.Class({
                 if (!status.frontDead) status.frontInt += 5;
                 if (!status.middleDead) status.middleInt += 5;
                 if (!status.backDead) status.backInt += 5;
+
+                this.shopCtrl.getComponent("ShopCtrl").madoshoPrice = Math.round(this.shopCtrl.getComponent("ShopCtrl").madoshoPrice * 1.1);
+                this.shopCtrl.getComponent("ShopCtrl").reflectLabel();
+
                 this.attackButton.getChildByName("label").getComponent(cc.Label).string = "マホウコウゲキ";
                 this.schedule(function(){
                     this.attackButton.getChildByName("label").getComponent(cc.Label).string = "コウゲキ";
@@ -217,6 +248,10 @@ cc.Class({
                 if (!status.frontDead) status.frontAgi += 1;
                 if (!status.middleDead) status.middleAgi += 1;
                 if (!status.backDead) status.backAgi += 1;
+
+                this.shopCtrl.getComponent("ShopCtrl").hanePrice = Math.round(this.shopCtrl.getComponent("ShopCtrl").hanePrice*1.1);
+                this.shopCtrl.getComponent("ShopCtrl").reflectLabel();
+
                 status.sumAgi = status.frontAgi + status.middleAgi + status.backAgi;
                 status.moneyRate += 1;
                 this.monster.getComponent("MonsterScript").resetSchedule();
@@ -227,6 +262,7 @@ cc.Class({
         }
         
         if(active){
+        cc.audioEngine.playEffect(this.buyAudio, false);
         this.statusCtrl.getComponent("StatusCtrl").addMoney(-price);
         }else{
             text.push("シエンキンが足りません！");

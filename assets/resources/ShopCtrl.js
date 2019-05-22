@@ -97,8 +97,8 @@ cc.Class({
     onLoad () {
         this.selectedItem = "kyoka";
         this.kyokaPrice = 100;
-        this.madoshoPrice = 500;
-        this.hanePrice = 1000;
+        this.madoshoPrice = 100;
+        this.hanePrice = 100;
 
         this.kyokaActive = false;
         this.madoshoActive = false;
