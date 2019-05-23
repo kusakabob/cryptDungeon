@@ -509,7 +509,7 @@
       "__id__": 7
     },
     "_enabled": true,
-    "hp": 500,
+    "hp": 1000,
     "interval": 1,
     "power": 5,
     "monsterBar": {

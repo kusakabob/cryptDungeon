@@ -40,6 +40,30 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
 
+    onKeyDown (event) {
+        var macro = cc.macro;
+        switch(event.keyCode) {
+            case macro.KEY.up:
+            if(this.selectedItem == "kyoka"){
+
+            }else if(this.selectedItem == "madosho"){
+                this.onKyokaClicked();
+            }else{
+                this.onMadoshoClicked();
+            }
+                break;
+            case macro.KEY.down:
+            if(this.selectedItem == "kyoka"){
+                this.onMadoshoClicked();
+            }else if(this.selectedItem == "madosho"){
+                this.onHaneClicked();
+            }else{
+                
+            }
+                break;
+        }
+    },
+
     onKyokaClicked (){
         this.selectionLabel.node.y = 29;
         this.selectedItem = "kyoka";
@@ -107,6 +131,11 @@ cc.Class({
         this.money = this.statusCtrl.getComponent("StatusCtrl").money;
         this.changeLabelColor(this.money);
         this.reflectLabel();
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+    },
+
+    onDestroy () {
+        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     },
 
     start () {

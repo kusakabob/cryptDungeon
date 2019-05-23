@@ -73,6 +73,11 @@ cc.Class({
         self.randomRange = cc.v2(100, 100);
         self.variability = 30;
         self.madoshoActive = false;
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+    },
+
+    onDestroy () {
+        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     },
 
     start: function(){
@@ -107,6 +112,18 @@ cc.Class({
             damageCount.runAction(cc.sequence(cc.fadeOut(0.1),cc.removeSelf()));
           }.bind(this), 500);
         return damageCount.num;
+    },
+
+    onKeyDown (event) {
+        var macro = cc.macro;
+        switch(event.keyCode) {
+            case macro.KEY.space:
+                this.onAttackButtonClicked();
+                break;
+            case macro.KEY.enter:
+                this.onBuyButtonClicked();
+                break;
+        }
     },
  
     reset: function() {
@@ -173,7 +190,11 @@ cc.Class({
         }
 
         if(this.monsterBar.getChildByName("monster_icon").x > 0){
-        this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-1,0)))
+            if(!this.madoshoActive){
+        this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-0.25,0)));
+            }else{
+        this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-2,0)));
+            }
         } 
         var text = "ヒーローの攻撃：" + damage + "ダメージ"
 
@@ -244,17 +265,11 @@ cc.Class({
                 active = true;
                 text.push("魔法の羽根を買った");
                 text.push("シエンキンの調達料が増えた");
-                text.push("AGIが1UPした");
-                if (!status.frontDead) status.frontAgi += 1;
-                if (!status.middleDead) status.middleAgi += 1;
-                if (!status.backDead) status.backAgi += 1;
 
-                this.shopCtrl.getComponent("ShopCtrl").hanePrice = Math.round(this.shopCtrl.getComponent("ShopCtrl").hanePrice*1.1);
+                this.shopCtrl.getComponent("ShopCtrl").hanePrice = Math.round(this.shopCtrl.getComponent("ShopCtrl").hanePrice*=1.5);
                 this.shopCtrl.getComponent("ShopCtrl").reflectLabel();
 
-                status.sumAgi = status.frontAgi + status.middleAgi + status.backAgi;
                 status.moneyRate += 1;
-                this.monster.getComponent("MonsterScript").resetSchedule();
             }
             break;
             default:
