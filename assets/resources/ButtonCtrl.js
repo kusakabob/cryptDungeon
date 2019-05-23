@@ -74,6 +74,7 @@ cc.Class({
         self.variability = 30;
         self.madoshoActive = false;
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+        this.timer = this.schedule(this.onAttackButtonClicked, 0.2);
     },
 
     onDestroy () {
@@ -191,9 +192,9 @@ cc.Class({
 
         if(this.monsterBar.getChildByName("monster_icon").x > 0){
             if(!this.madoshoActive){
-        this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-0.25,0)));
+        this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-0.5,0)));
             }else{
-        this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-2,0)));
+        this.monsterBar.getChildByName("monster_icon").runAction(cc.moveBy(0.1, cc.v2(-2.5,0)));
             }
         } 
         var text = "ヒーローの攻撃：" + damage + "ダメージ"

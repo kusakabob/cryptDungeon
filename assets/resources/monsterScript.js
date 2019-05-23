@@ -46,7 +46,19 @@ cc.Class({
         nameLabel: {
             default: null,
             type: cc.Label
-        }
+        },
+        BGM1: {
+            type: cc.AudioClip,
+            default: null
+        },
+        BGM2: {
+            type: cc.AudioClip,
+            default: null
+        },
+        BGM3: {
+            type: cc.AudioClip,
+            default: null
+        },
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -58,6 +70,7 @@ cc.Class({
         this.stop = false;
         cc.audioEngine.setEffectsVolume(0.5);
         this.level = 1;
+        var id = cc.audioEngine.play(this.BGM1, true, 1);
     },
 
     start (){
@@ -114,7 +127,9 @@ cc.Class({
             
             break;
             case 3:
-            this.hp = 50000;
+            cc.audioEngine.stopAll();
+            var id = cc.audioEngine.play(this.BGM2, true, 1);
+            this.hp = 40000;
             this.power = 20;
             this.interval = 0.8;
             this.resetSchedule();
@@ -125,9 +140,11 @@ cc.Class({
             });
             break;
             case 4:
-            this.hp = 100000;
+            cc.audioEngine.stopAll();
+            var id = cc.audioEngine.play(this.BGM3, true, 1);
+            this.hp = 30000;
             this.power = 50;
-            this.interval = 1;
+            this.interval = 0.9;
             this.resetSchedule();
             this.hpBar.getChildByName("left").scaleX = 39.537;
             this.nameLabel.string = "クリプ首領"
@@ -143,7 +160,7 @@ cc.Class({
         var monsterIcon = this.monsterBar.getChildByName("monster_icon");
         this.node.runAction(cc.sequence(cc.moveBy(0.1, cc.v2(20,0)), cc.moveBy(0.1, cc.v2(-20,0)) ))
         if(monsterIcon.x <= 271){
-        monsterIcon.runAction(cc.moveBy(0.1, cc.v2(15,0)))
+        monsterIcon.runAction(cc.moveBy(0.1, cc.v2(20,0)))
         }else{
             console.log("gameover");
             this.dialogBox.getComponent("DialogBoxCtrl").showGameOver(false);
