@@ -74,7 +74,7 @@ cc.Class({
         self.variability = 30;
         self.madoshoActive = false;
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-        this.timer = this.schedule(this.onAttackButtonClicked, 0.2);
+        this.timer = this.schedule(this.onAttackButtonClicked, 0.1);
     },
 
     onDestroy () {
@@ -119,7 +119,7 @@ cc.Class({
         var macro = cc.macro;
         switch(event.keyCode) {
             case macro.KEY.space:
-                this.onAttackButtonClicked();
+                //this.onAttackButtonClicked();
                 break;
             case macro.KEY.enter:
                 this.onBuyButtonClicked();
@@ -179,7 +179,6 @@ cc.Class({
         if(this.hpBar.getChildByName("left").scaleX > 0){
 
         var damagePercentage = damage / this.monster.getComponent("MonsterScript").hp;
-        console.log(damagePercentage);
         var subtractPercentage = damagePercentage * (this.hpBar.getChildByName("left").scaleX / 100);
         this.hpBar.getChildByName("left").scaleX = this.hpBar.getChildByName("left").scaleX - damagePercentage;
         if (this.hpBar.getChildByName("left").scaleX <= 0.1) {

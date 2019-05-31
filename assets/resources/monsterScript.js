@@ -142,7 +142,7 @@ cc.Class({
             case 4:
             cc.audioEngine.stopAll();
             var id = cc.audioEngine.play(this.BGM3, true, 1);
-            this.hp = 30000;
+            this.hp = 40000;
             this.power = 50;
             this.interval = 0.9;
             this.resetSchedule();
